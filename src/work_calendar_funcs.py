@@ -6,8 +6,8 @@ import itertools
 from calendar import monthcalendar
 from functools import partial
 
-from work_calendar_constants import month_names, week_days_names, now_date
-from my_own_funcs import implosive_attractor, list_engine, zip_engine
+import work_calendar_constants as const
+from my_own_funcs import implosive_attractor, list_engine, zip_engine, str_engine
 
 
 def work_days_in_year(first_day_of_work, month_of_work, year_of_work):
@@ -43,7 +43,7 @@ def work_days_in_year(first_day_of_work, month_of_work, year_of_work):
     work_days_in_all_year = {}
 
     # Конечное условие функции- следующий год
-    if year_of_work == now_date[2] + 1:
+    if year_of_work == const.now_date[2] + 1:
         return
     current_date = [first_day_of_work, month_of_work, year_of_work]
     data = list(itertools.chain.from_iterable(monthcalendar(current_date[2], current_date[1])))
@@ -55,15 +55,16 @@ def work_days_in_year(first_day_of_work, month_of_work, year_of_work):
 
     # Получим рабочие дни в месяце
     work_days_in_month = {
-        month_names[month_of_work - 1]: implosive_attractor(lambda A, n=7: [A[i:i + n] for i in range(0, len(A), n)])(
+        const.month_names[month_of_work - 1]: implosive_attractor(
+            lambda A, n=7: [A[i:i + n] for i in range(0, len(A), n)])(
             work_days)}
     # Определим последний и рабочий день в месяце
     last_work_day_of_current_month = datetime.datetime.strptime(
-        f'{max(work_days_in_month[month_names[month_of_work - 1]][-1])}-{current_date[1]}-{current_date[2]}',
+        f'{max(work_days_in_month[const.month_names[month_of_work - 1]][-1])}-{current_date[1]}-{current_date[2]}',
         "%d-%m-%Y")
 
     # Создаём таблицу рабочих дней.
-    now_month_table = list_engine(partial(zip_engine, week_days_names), list(work_days_in_month.values())[0])
+    now_month_table = list_engine(partial(zip_engine, const.week_days_names), list(work_days_in_month.values())[0])
 
     work_days_in_month.update({
         list(work_days_in_month.keys())[0]: now_month_table
@@ -78,7 +79,46 @@ def work_days_in_year(first_day_of_work, month_of_work, year_of_work):
     return work_days_in_all_year
 
 
+def html_builder(table_for_build):
+    """
+    Создаёт строку для HTML файла таблицы рабочих дней.
+    :param table_for_build:
+    :return:
+    """
+    existed_months = list(table_for_build.keys())
+    html_text = const.html_header
+    html_text += const.html_table_border
+
+    html_table_row_builder = lambda dict_to_html_row:\
+        '<tr><td>{}'\
+        '</td><td>{}'\
+        '</td><td>{}'\
+        '</td><td>{}'\
+        '</td></tr>{}'\
+        '</td></tr>{}'\
+        '</td></tr>{}</td></tr>'.format(
+            dict_to_html_row['mon'],
+            dict_to_html_row['tue'],
+            dict_to_html_row['wed'],
+            dict_to_html_row['thu'],
+            dict_to_html_row['fri'],
+            dict_to_html_row['sat'],
+            dict_to_html_row['sun'],
+        )
+
+    table_builder = lambda month_to_build_table:"<caption>{}</caption>".format(month_to_build_table).join(
+        list_engine(html_table_row_builder, table_for_build[month_to_build_table])
+    )
+    html_text += str_engine(table_builder, existed_months)
+    html_text += const.html_table_end
+    html_text += const.html_doc_end
+    return html_text
+
+
 # Для тестирования и локальных запусков
 if __name__ == "__main__":
-    wc_days = work_days_in_year(first_day_of_work=now_date[0], month_of_work=now_date[1], year_of_work=now_date[2])
+    workc_days = work_days_in_year(first_day_of_work=const.now_date[0],
+                                   month_of_work=const.now_date[1],
+                                   year_of_work=const.now_date[2])
+    html_builder(workc_days)
     pass

@@ -29,3 +29,4 @@ implosive_attractor = lambda *funcs: partial(lambda *args: reduce(lambda x, f: f
 list_engine = implosive_attractor(map, list)
 filter_engine = implosive_attractor(filter, list)
 zip_engine = implosive_attractor(zip, dict)
+str_engine = implosive_attractor(map, list, "".join)
