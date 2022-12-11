@@ -2,87 +2,50 @@
 Программа для вывода рабочих и выходных дней для людей, работающих 2/2
 """
 import calendar
+from calendar import Calendar, monthcalendar
+import datetime
+from Algorithms.func_programming.my_own_useful_funcs import implosive_attractor, list_engine, filter_engine, zip_engine
+from functools import partial
+import itertools
 
+week_days_names = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]
 
-def last_day_of_month(month):
-    '''
-    Возвращает последнее число месяца
-    :param month: класс библиотеки календарь calendar.monthcalendar()
-    :return:
-    '''
-    last_day_of_month = []
-    k = 0
-    if len(month) == 5:
-        k = 4
-    elif len(month) == 6:
-        k = 5
-    for day in month[k]:
-        if day >= 30:
-            a = day
-            last_day_of_month.append(a)
-    if len(last_day_of_month) > 1 and last_day_of_month[0] + last_day_of_month[1] == 61:
-        return 31
-    elif len(last_day_of_month) == 1 and last_day_of_month[0] == 31:
-        return 31
-    elif len(last_day_of_month) == 1 and last_day_of_month[0] == 30:
-        return 30
+month_names = list(calendar.month_name)[1:]
+now_date = implosive_attractor(partial(map, int), list)(datetime.date.today().strftime("%d-%m-%Y").split("-"))
+work_days_in_all_year = {}
 
+def work_days_in_year(first_day_of_work, month_of_work, year_of_work):
+    # if year_of_work == now_date[2] + 1:
+    #     return
+    if year_of_work == 2024:
+        return
+    current_date = [first_day_of_work, month_of_work, year_of_work]
+    data = list(itertools.chain.from_iterable(monthcalendar(current_date[2], current_date[1])))
 
+    work_days = ([
+        0 if x not in sorted(data[data.index(first_day_of_work):][::4] + data[data.index(first_day_of_work + 1):][::4])[
+                      1:] else x for x in data])
 
+    work_days_in_month = {
+        month_names[month_of_work - 1]: implosive_attractor(lambda A, n=7: [A[i:i + n] for i in range(0, len(A), n)])(
+            work_days)}
+    last_work_day_of_current_month = datetime.datetime.strptime(
+        f'{max(work_days_in_month[month_names[month_of_work - 1]][-1])}-{current_date[1]}-{current_date[2]}', "%d-%m-%Y")
+    now_month_table = list_engine(partial(zip_engine, week_days_names), list(work_days_in_month.values())[0])
+    work_days_in_month.update({
+        list(work_days_in_month.keys())[0]: now_month_table
+    })
+    work_days_in_all_year.update(work_days_in_month)
+    first_day_of_work = implosive_attractor(partial(map, int), list) \
+            (
+            (last_work_day_of_current_month + datetime.timedelta(days=3)).strftime("%d-%m-%Y").split("-")
+        )
+    work_days_in_year(first_day_of_work[0], first_day_of_work[1], first_day_of_work[2])
 
-def work_calendar(z: int, year: int, i: int):
-    """
-    Функция возвращает строку с рабочими днями и названием месяца
-
-    :param z: месяц, с которого необходимо посчитать рабочие дни
-    :param year: год в котором необходимо посчитать рабочие дни.
-    :param i: первое рабочее число, с которого нужно начать отчёт рабочих дней
-    :return:
-    """
-
-    j = i + 1  # второе рабочее число
-    month_weeks = calendar.monthcalendar(year, z)
-    work_days = []
-    month_name = list(calendar.month_name)
-    while z != 13:
-        month_weeks = calendar.monthcalendar(year, z)
-        for week in month_weeks:
-            for day in week:
-                if day == i:
-                    if last_day_of_month(month_weeks) == 30 and i == 31:
-                        break
-                    else:
-                        work_days.append(i)
-                    i += 4
-                    if j != 32:
-                        work_days.append(j)
-                        j += 4
-        print(f'Рабочие числа в {month_name[z]}')
-        print(work_days)
-        if last_day_of_month(month_weeks) == 31 and work_days[-1] == 31:
-            i = 3
-            j = i + 1
-        elif last_day_of_month(month_weeks) == 31 and work_days[-1] == 30:
-            i = 2
-            j = i + 1
-        elif last_day_of_month(month_weeks) == 31 and work_days[-1] == 29:
-            i = 1
-            j = i + 1
-        elif last_day_of_month(month_weeks) == 30 and work_days[-1] == 29:
-            i = 2
-            j = i + 1
-        elif last_day_of_month(month_weeks) == 30 and work_days[-1] == 31:
-            i = 2
-            j = i + 1
-        elif last_day_of_month(month_weeks) == 30 and work_days[-1] == 28:
-            i = 1
-            j = i + 1
-        else:
-            print('Невозможно, пересмотри программу или входные данные')
-        z += 1
-        work_days.clear()
 
 
 
 if __name__ == "__main__":
-    work_calendar(z=7, year=2022, i=21)
+    # work_days_in_year(first_day_of_work=now_date[0], month_of_work=now_date[1], year_of_work=now_date[2])
+    work_days_in_year(first_day_of_work=1, month_of_work=1, year_of_work=2023)
+    pass
