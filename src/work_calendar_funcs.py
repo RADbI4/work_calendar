@@ -9,6 +9,8 @@ from functools import partial
 import work_calendar_constants as const
 from my_own_funcs import implosive_attractor, list_engine, zip_engine, str_engine
 
+# Инициализируем доп. память для словаря
+work_days_in_all_year = {}
 
 def work_days_in_year(first_day_of_work, month_of_work, year_of_work):
     """
@@ -39,8 +41,9 @@ def work_days_in_year(first_day_of_work, month_of_work, year_of_work):
     Значения- список недель с днями. 0 -не рабочий день либо день другого месяца.
     Числа- рабочие дни.
     """
-    # Инициализируем доп. память для словаря
-    work_days_in_all_year = {}
+    # Для тестов
+    # if year_of_work == 2024:
+    #     return
 
     # Конечное условие функции- следующий год
     if year_of_work == const.now_date[2] + 1:
@@ -85,7 +88,6 @@ def html_builder(table_for_build):
     :param table_for_build:
     :return:
     """
-    existed_months = list(table_for_build.keys())
     html_table_row_builder = lambda dict_to_html_row: \
         '<tr><td>{}' \
         '</td><td>{}' \
@@ -103,16 +105,15 @@ def html_builder(table_for_build):
             dict_to_html_row['sun'],
         )
 
-    table_builder = lambda month_to_build_table: "   ".join(
-        list_engine(html_table_row_builder, table_for_build[month_to_build_table])
-    )
+    table_builder = lambda month_to_build_table: \
+        const.html_table_border \
+        + "<caption>{}</caption>\n   ".format(month_to_build_table) \
+        + const.html_days \
+        + "   ".join(
+        list_engine(html_table_row_builder, table_for_build[month_to_build_table])) \
+        + const.html_table_end
 
-    html_text = const.html_header \
-                 + const.html_table_border \
-                 + "<caption>{}</caption>\n   ".format(existed_months[0]) \
-                 + const.html_days \
-                 + str_engine(table_builder, existed_months)\
-                 + const.html_table_end + const.html_tail
+    html_text = const.html_header + str_engine(table_builder, list(table_for_build.keys())) + const.html_tail
     return html_text
 
 
@@ -126,4 +127,6 @@ if __name__ == "__main__":
     html_file_saver(html_builder(work_days_in_year(first_day_of_work=const.now_date[0],
                                                    month_of_work=const.now_date[1],
                                                    year_of_work=const.now_date[2])))
+
+    # html_file_saver(html_builder(work_days_in_year(first_day_of_work=1, month_of_work=1, year_of_work=2023)))
     pass
