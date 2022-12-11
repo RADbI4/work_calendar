@@ -124,9 +124,9 @@ def html_file_saver(text_for_html_file):
 
 # Для тестирования и локальных запусков
 if __name__ == "__main__":
-    html_file_saver(html_builder(work_days_in_year(first_day_of_work=const.now_date[0],
-                                                   month_of_work=const.now_date[1],
-                                                   year_of_work=const.now_date[2])))
+    # html_file_saver(html_builder(work_days_in_year(first_day_of_work=const.now_date[0],
+    #                                                month_of_work=const.now_date[1],
+    #                                                year_of_work=const.now_date[2])))
 
     # html_file_saver(html_builder(work_days_in_year(first_day_of_work=1, month_of_work=1, year_of_work=2023)))
     pass
