@@ -15,24 +15,22 @@ html_header = """<!DOCTYPE html>
     <meta charset="UTF-8">
     <title>Таблица рабочих дней в году 2/2</title>
 </head>
-<body>"""
+<body>\n"""
 
 html_tail = """</body>
 </html>"""
 
-html_table_border = """<table border="1">"""
+html_table_border = """  <table border="1">\n   """
 
-html_days = """<tr>
-    <th>Mon</th>
-    <th>tue</th>
-    <th>wed</th>
-    <th>thu</th>
-    <th>fri</th>
+html_days = """<tr>  
+    <th>Mon</th>   
+    <th>tue</th>    
+    <th>wed</th>  
+    <th>thu</th>  
+    <th>fri</th>    
     <th>sat</th>
     <th>sun</th>
-   </tr>"""
+   </tr>\n   """
 
-html_table_end = """</table>"""
+html_table_end = """  </table>\n"""
 
-html_doc_end = """</body>
-</html>"""

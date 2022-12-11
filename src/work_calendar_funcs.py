@@ -86,17 +86,14 @@ def html_builder(table_for_build):
     :return:
     """
     existed_months = list(table_for_build.keys())
-    html_text = const.html_header
-    html_text += const.html_table_border
-
-    html_table_row_builder = lambda dict_to_html_row:\
-        '<tr><td>{}'\
-        '</td><td>{}'\
-        '</td><td>{}'\
-        '</td><td>{}'\
-        '</td></tr>{}'\
-        '</td></tr>{}'\
-        '</td></tr>{}</td></tr>'.format(
+    html_table_row_builder = lambda dict_to_html_row: \
+        '<tr><td>{}' \
+        '</td><td>{}' \
+        '</td><td>{}' \
+        '</td><td>{}' \
+        '</td><td>{}' \
+        '</td><td>{}' \
+        '</td><td>{}</td></tr>\n'.format(
             dict_to_html_row['mon'],
             dict_to_html_row['tue'],
             dict_to_html_row['wed'],
@@ -106,19 +103,27 @@ def html_builder(table_for_build):
             dict_to_html_row['sun'],
         )
 
-    table_builder = lambda month_to_build_table:"<caption>{}</caption>".format(month_to_build_table).join(
+    table_builder = lambda month_to_build_table: "   ".join(
         list_engine(html_table_row_builder, table_for_build[month_to_build_table])
     )
-    html_text += str_engine(table_builder, existed_months)
-    html_text += const.html_table_end
-    html_text += const.html_doc_end
+
+    html_text = const.html_header \
+                 + const.html_table_border \
+                 + "<caption>{}</caption>\n   ".format(existed_months[0]) \
+                 + const.html_days \
+                 + str_engine(table_builder, existed_months)\
+                 + const.html_table_end + const.html_tail
     return html_text
+
+
+def html_file_saver(text_for_html_file):
+    with open("work_days_of_current_year.html", "w+") as html_file:
+        html_file.write(text_for_html_file)
 
 
 # Для тестирования и локальных запусков
 if __name__ == "__main__":
-    workc_days = work_days_in_year(first_day_of_work=const.now_date[0],
-                                   month_of_work=const.now_date[1],
-                                   year_of_work=const.now_date[2])
-    html_builder(workc_days)
+    html_file_saver(html_builder(work_days_in_year(first_day_of_work=const.now_date[0],
+                                                   month_of_work=const.now_date[1],
+                                                   year_of_work=const.now_date[2])))
     pass
