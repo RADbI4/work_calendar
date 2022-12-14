@@ -53,7 +53,7 @@ def work_days_in_year(first_day_of_work, month_of_work, year_of_work):
 
     # Получим только рабочие дни
     work_days = ([
-        0 if x not in sorted(data[data.index(first_day_of_work):][::4] + data[data.index(first_day_of_work + 1):][::4])[
+        0 if x not in sorted([first_day_of_work] + data[data.index(first_day_of_work):][::4] + data[data.index(first_day_of_work + 1):][::4])[
                       1:] else x for x in data])
 
     # Получим рабочие дни в месяце
@@ -88,20 +88,29 @@ def html_builder(table_for_build):
     :param table_for_build:
     :return:
     """
+    color_choiser = lambda int_for_coloring: 'bgcolor="#92ff15"' if int_for_coloring ==0 else 'bgcolor="#d53e07"'
+
     html_table_row_builder = lambda dict_to_html_row: \
-        '<tr><td>{}' \
-        '</td><td>{}' \
-        '</td><td>{}' \
-        '</td><td>{}' \
-        '</td><td>{}' \
-        '</td><td>{}' \
-        '</td><td>{}</td></tr>\n'.format(
+        '<tr><td {}>{}' \
+        '</td><td {}>{}' \
+        '</td><td {}>{}' \
+        '</td><td {}>{}' \
+        '</td><td {}>{}' \
+        '</td><td {}>{}' \
+        '</td><td {}>{}</td></tr>\n'.format(
+            color_choiser(dict_to_html_row['mon']),
             dict_to_html_row['mon'],
+            color_choiser(dict_to_html_row['tue']),
             dict_to_html_row['tue'],
+            color_choiser(dict_to_html_row['wed']),
             dict_to_html_row['wed'],
+            color_choiser(dict_to_html_row['thu']),
             dict_to_html_row['thu'],
+            color_choiser(dict_to_html_row['fri']),
             dict_to_html_row['fri'],
+            color_choiser(dict_to_html_row['sat']),
             dict_to_html_row['sat'],
+            color_choiser(dict_to_html_row['sun']),
             dict_to_html_row['sun'],
         )
 
