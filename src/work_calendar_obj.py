@@ -163,3 +163,4 @@ if __name__ == "__main__":
     # a = b.work_days_in_month(26, 1, 2023)
     # Table_plotter().built_table(*b.color_set_mapper, **b.work_days_return)
     pass
+
