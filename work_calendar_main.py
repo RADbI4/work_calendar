@@ -2,23 +2,22 @@
 Логика приложения.
 """
 import work_calendar.src.work_calendar_constants as workc_const
-import src.work_calendar_funcs as workc_fucns
+from work_calendar_obj import Work_days_calculator, Table_plotter
 from my_own_funcs import implosive_attractor
 
-def workc_main():
+
+def workc_main(*date):
     """
     Главная логика приложения
     :return:
     """
-    # Сначала определим все рабочие дни в году, затем создадим текст таблички html, затем сохраним файл html
-    implosive_attractor(workc_fucns.work_days_in_year, workc_fucns.html_builder, workc_fucns.html_file_saver)(
-        workc_const.now_date[0],
-        workc_const.now_date[1],
-        workc_const.now_date[2]
-    )
+    # Определим данные для следующего класса и таблицу истинности рабочих/выходных дней.
+    one_month_calculations = Work_days_calculator().work_days_in_month(date[0], date[1], date[2])
+    Table_plotter().built_table(*one_month_calculations.color_set_mapper, **one_month_calculations.work_days_return)
 
 
 # Для тестирования и локальных запусков
 if __name__ == "__main__":
     # now_date = [1, 1, 2023]
-    workc_main()
+    # workc_main()
+    pass
