@@ -62,10 +62,15 @@ def work_days_in_year(first_day_of_work, month_of_work, year_of_work):
             lambda A, n=7: [A[i:i + n] for i in range(0, len(A), n)])(
             work_days)}
     # Определим последний и рабочий день в месяце
-    last_work_day_of_current_month = datetime.datetime.strptime(
-        f'{max(work_days_in_month[const.month_names[month_of_work - 1]][-1])}-{current_date[1]}-{current_date[2]}',
-        "%d-%m-%Y")
-
+    try:
+        last_work_day_of_current_month = datetime.datetime.strptime(
+            f'{max(work_days_in_month[const.month_names[month_of_work - 1]][-1])}-{current_date[1]}-{current_date[2]}',
+            "%d-%m-%Y")
+    except BaseException as e:
+        # Если нет рабочих дней в последней неделе месяца, то они точно есть в предпоследней
+        last_work_day_of_current_month = datetime.datetime.strptime(
+            f'{max(work_days_in_month[const.month_names[month_of_work - 1]][-2])}-{current_date[1]}-{current_date[2]}',
+            "%d-%m-%Y")
     # Создаём таблицу рабочих дней.
     now_month_table = list_engine(partial(zip_engine, const.week_days_names), list(work_days_in_month.values())[0])
 
