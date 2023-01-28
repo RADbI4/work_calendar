@@ -6,11 +6,12 @@ import itertools
 from calendar import monthcalendar
 from functools import partial
 from work_calendar_constants import week_days_names
-import telebot
-import os
 import work_calendar_constants as const
-from my_own_funcs import implosive_attractor, list_engine, zip_engine, str_engine
+from my_own_funcs import implosive_attractor, list_engine
 from matplotlib import pyplot as plt
+import pika
+import json
+from base64 import b64encode
 
 
 class Work_days_calculator:
@@ -152,19 +153,27 @@ class Table_plotter:
                              colLabels=week_days_names,
                              loc='center')
         ax.axis('off')
-
-        plt.savefig(f'work_days_of_{list(data.keys())[0]}.png')
+        data = {'fname': f'work_days_of_{list(data.keys())[0]}.png'}
+        plt.savefig(data.get('fname'))
         plt.close()
+        return data
 
 
-def telegram_floader(chat_id):
+def pub_t_tg_floader(data: dict):
     """
-    Посылает фото в чат Телеграмм.
+    Публикует сообщение в очередь RabbitMQ work_d_out
     :return:
     """
-    bot = telebot.TeleBot(os.environ.get('telegram_bot_1'))
-    img = open('work_days_of_January.png', 'rb')
-    bot.send_photo(chat_id, img)
+    connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
+    channel = connection.channel()
+    channel.queue_declare(queue='work_d_out')
+    with open('work_days_of_January.png', 'rb') as file_to_floader:
+        # file_to_floader = file_to_floader.read()
+        # file_to_floader = file_to_floader.decode('utf-8')
+        file_to_floader = b64encode(file_to_floader.read()).decode('utf-8')
+        data['fdata'] = file_to_floader
+        data = json.dumps(data)
+        channel.basic_publish(exchange='', routing_key='work_d_out', body=data)
 
 
 if __name__ == "__main__":
@@ -173,4 +182,3 @@ if __name__ == "__main__":
     # a = b.work_days_in_month(26, 1, 2023)
     # Table_plotter().built_table(*b.color_set_mapper, **b.work_days_return)
     pass
-
