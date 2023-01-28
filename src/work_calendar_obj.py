@@ -65,7 +65,7 @@ class Work_days_calculator:
                 "%d-%m-%Y")
 
         self.color_set_mapper = [
-            [list_engine(lambda to_boolean: 'red' if to_boolean == 0 else 'green', week) for week in month] for month in
+            [list_engine(lambda to_boolean: 'green' if to_boolean == 0 else 'red', week) for week in month] for month in
             work_days_in_month.values()]
 
         work_days_in_month.update({
