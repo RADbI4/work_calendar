@@ -9,8 +9,6 @@ from work_calendar_constants import week_days_names
 
 import work_calendar_constants as const
 from my_own_funcs import implosive_attractor, list_engine, zip_engine, str_engine
-import numpy as np
-import pandas as pd
 from matplotlib import pyplot as plt
 
 
@@ -155,6 +153,7 @@ class Table_plotter:
         ax.axis('off')
 
         plt.savefig(f'work_days_of_{list(data.keys())[0]}.png')
+        plt.close()
 
 
 if __name__ == "__main__":
