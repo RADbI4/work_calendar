@@ -8,7 +8,7 @@ import pika
 
 connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
 channel = connection.channel()
-channel.queue_declare(queue='work_d_out')
+channel.queue_declare(queue='work_d_in')
 
 
 def callback(ch, method, properties, body):
@@ -21,6 +21,6 @@ def callback(ch, method, properties, body):
         print(traceback.format_exc())
 
 
-channel.basic_consume(on_message_callback=callback, queue='work_d_out', auto_ack=True)
+channel.basic_consume(on_message_callback=callback, queue='work_d_in', auto_ack=True)
 print(' [*] Waiting for messages, press CTRL+C to exit')
 channel.start_consuming()
