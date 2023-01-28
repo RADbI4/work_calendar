@@ -154,7 +154,7 @@ class Table_plotter:
                              loc='center')
         ax.axis('off')
 
-        plt.savefig(f'work_days_of_{list(data.keys())[0]}.pdf')
+        plt.savefig(f'work_days_of_{list(data.keys())[0]}.png')
 
 
 if __name__ == "__main__":
