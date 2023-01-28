@@ -6,11 +6,10 @@ import itertools
 from calendar import monthcalendar
 from functools import partial
 from work_calendar_constants import week_days_names
-
+import telebot
+import os
 import work_calendar_constants as const
 from my_own_funcs import implosive_attractor, list_engine, zip_engine, str_engine
-import numpy as np
-import pandas as pd
 from matplotlib import pyplot as plt
 
 
@@ -155,6 +154,17 @@ class Table_plotter:
         ax.axis('off')
 
         plt.savefig(f'work_days_of_{list(data.keys())[0]}.png')
+        plt.close()
+
+
+def telegram_floader(chat_id):
+    """
+    Посылает фото в чат Телеграмм.
+    :return:
+    """
+    bot = telebot.TeleBot(os.environ.get('telegram_bot_1'))
+    img = open('work_days_of_January.png', 'rb')
+    bot.send_photo(chat_id, img)
 
 
 if __name__ == "__main__":
