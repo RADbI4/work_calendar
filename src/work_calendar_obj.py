@@ -153,7 +153,7 @@ class Table_plotter:
                              colLabels=week_days_names,
                              loc='center')
         ax.axis('off')
-        data = {'fname': f'work_days_of_{list(data.keys())[0]}.png'}
+        data = {'fname': f'work_days_of_month.png'}
         plt.savefig(data.get('fname'))
         plt.close()
         return data
@@ -167,7 +167,7 @@ def pub_t_tg_floader(data: dict):
     connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
     channel = connection.channel()
     channel.queue_declare(queue='work_d_out')
-    with open('work_days_of_January.png', 'rb') as file_to_floader:
+    with open('work_days_of_month.png', 'rb') as file_to_floader:
         # file_to_floader = file_to_floader.read()
         # file_to_floader = file_to_floader.decode('utf-8')
         file_to_floader = b64encode(file_to_floader.read()).decode('utf-8')
